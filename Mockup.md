@@ -1,0 +1,1 @@
+https://www.figma.com/file/QJLEt2K6sDfelIMqqOBO5H/Genshin-Wishing-Simulator-team-library?node-id=511%3A2&t=GiuyCowiAFsBjxas-0
