@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { failureAlert, successAlert } from '../helpers/sweetalert';
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({ 
@@ -13,6 +14,35 @@ export const useGlobalStore = defineStore('global', {
     doubleCount: (state) => state.count * 2,
   },
   actions: {
+    async handleLogin(userInput) {
+      try {
+        const { data } = await axios({
+          method: "POST",
+          url: this.baseUrl + "/users/login",
+          data: userInput
+        });
+
+        localStorage.access_token = data.access_token;
+        this.router.push('/');
+        successAlert('Logged In');
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    },
+    async handleRegister(userInput) {
+      try {
+        await axios({
+          method: "POST",
+          url: this.baseUrl + "/users/register",
+          data: userInput
+        });
+        
+        this.router.push('/login');
+        successAlert('Your account has been created');
+      } catch (error) {
+        failureAlert(error.response.data.message);
+      }
+    },
     async fetchFiveStarCharacters() {
       try {
         const { data } = await axios({
@@ -21,7 +51,7 @@ export const useGlobalStore = defineStore('global', {
         })
         this.fiveStarCharacters = data;
       } catch (error) {
-        console.log(error.response.data.message);
+        failureAlert(error.response.data.message);
       }
     },
     async fetchFourStarCharacters() {
@@ -32,7 +62,7 @@ export const useGlobalStore = defineStore('global', {
         })
         this.fourStarCharacters = data;
       } catch (error) {
-        console.log(error.response.data.message);
+        failureAlert(error.response.data.message);
       }
     },
     async fetchBanners() {
@@ -42,9 +72,8 @@ export const useGlobalStore = defineStore('global', {
           url: this.baseUrl + '/gachas/banners'
         })
         this.banners = data;
-        console.log(this.banners);
       } catch (error) {
-        console.log(error.response.data.message);
+        failureAlert(error.response.data.message);
       }
     },
     async fetchBannerById(id) {
@@ -55,7 +84,7 @@ export const useGlobalStore = defineStore('global', {
         })
         this.currentBanner = data;
       } catch (error) {
-        console.log(error.response.data.message);
+        failureAlert(error.response.data.message);
       }
     }
   },
