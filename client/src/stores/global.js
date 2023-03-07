@@ -8,7 +8,8 @@ export const useGlobalStore = defineStore('global', {
     fiveStarCharacters: [],
     fourStarCharacters: [],
     banners: [],
-    currentBanner: {}
+    currentBanner: {},
+    isLoggedIn: false
   }),
   getters: {
     doubleCount: (state) => state.count * 2,
@@ -22,6 +23,7 @@ export const useGlobalStore = defineStore('global', {
           data: userInput
         });
 
+        this.isLoggedIn = true;
         localStorage.access_token = data.access_token;
         this.router.push('/');
         successAlert('Logged In');
