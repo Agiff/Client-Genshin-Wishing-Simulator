@@ -31,6 +31,12 @@ export const useGlobalStore = defineStore('global', {
         console.log(error.response.data.message);
       }
     },
+    handleLogout() {
+      this.isLoggedIn = false;
+      localStorage.clear();
+      this.router.push('/login');
+      successAlert('Logged Out');
+    },
     async handleRegister(userInput) {
       try {
         await axios({

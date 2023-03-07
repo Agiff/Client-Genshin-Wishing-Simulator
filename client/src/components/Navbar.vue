@@ -7,6 +7,9 @@ import { useGlobalStore } from '../stores/global';
     computed: {
       ...mapWritableState(useGlobalStore, ['isLoggedIn'])
     },
+    methods: {
+      ...mapActions(useGlobalStore, ['handleLogout'])
+    },
     created() {
       if (localStorage.access_token) {
         this.isLoggedIn = true;
@@ -46,7 +49,7 @@ import { useGlobalStore } from '../stores/global';
             </li>
             <li class="nav-item d-flex align-items-center my-2" v-if="isLoggedIn">
               <span class="material-symbols-outlined me-2">logout</span>
-              <a class="nav-link" href="#">Logout</a>
+              <a @click.prevent="handleLogout" class="nav-link" href="#">Logout</a>
             </li>
           </ul>
         </div>
