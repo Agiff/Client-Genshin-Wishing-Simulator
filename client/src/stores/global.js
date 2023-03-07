@@ -91,6 +91,7 @@ export const useGlobalStore = defineStore('global', {
           url: this.baseUrl + '/gachas/banners/' + id
         })
         this.currentBanner = data;
+        console.log(this.currentBanner);
       } catch (error) {
         failureAlert(error.response.data.message);
       }

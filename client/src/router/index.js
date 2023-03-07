@@ -3,6 +3,7 @@ import HomePage from '../views/HomePage.vue';
 import LoginPage from '../views/LoginPage.vue';
 import RegisterPage from '../views/RegisterPage.vue';
 import CharacterPage from '../views/CharacterPage.vue';
+import GachaPage from '../views/GachaPage.vue';
 import NotFoundPage from '../views/NotFoundPage.vue';
 
 const router = createRouter({
@@ -27,6 +28,11 @@ const router = createRouter({
       path: '/characters',
       name: 'characters',
       component: CharacterPage
+    },
+    {
+      path: '/gacha/:id',
+      name: 'gacha/:id',
+      component: GachaPage
     },
     {
       path: '/:pathMatch(.*)*',

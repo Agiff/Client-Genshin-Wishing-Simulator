@@ -6,7 +6,7 @@
 </script>
 
 <template>
-  <div class="banner-card">
+  <div class="banner-card" @click="this.$router.push(`/gacha/${banner.id}`)">
     <img :src="banner.bannerImageUrl" class="card-img" alt="...">
   </div>
 </template>
