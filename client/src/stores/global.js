@@ -108,7 +108,37 @@ export const useGlobalStore = defineStore('global', {
         this.inventory = data;
       } catch (error) {
         failureAlert(error.response.data.message);
-        this.router.push('/');
+        this.router.push('/login');
+      }
+    },
+    async startGachaLimitedCharacter(id) {
+      try {
+        const { data } = await axios({
+          method: 'GET',
+          url: this.baseUrl + '/gachas/limited/' + id,
+          headers: {
+            access_token: localStorage.access_token
+          }
+        })
+        console.log(data);
+      } catch (error) {
+        failureAlert(error.response.data.message);
+        this.router.push('/login');
+      }
+    },
+    async startGachaLimitedCharacter10x(id) {
+      try {
+        const { data } = await axios({
+          method: 'GET',
+          url: this.baseUrl + '/gachas/limited/' + id + '/10x',
+          headers: {
+            access_token: localStorage.access_token
+          }
+        })
+        console.log(data);
+      } catch (error) {
+        failureAlert(error.response.data.message);
+        this.router.push('/login');
       }
     }
   },
