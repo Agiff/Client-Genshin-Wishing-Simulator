@@ -49,7 +49,7 @@ import { useGlobalStore } from '../stores/global';
             </li>
             <li class="nav-item d-flex align-items-center my-2" v-if="isLoggedIn">
               <span class="material-symbols-outlined me-2">inventory_2</span>
-              <router-link class="nav-link" to="/">Inventory</router-link>
+              <router-link class="nav-link" to="/inventory">Inventory</router-link>
             </li>
             <li class="nav-item d-flex align-items-center my-2" v-if="isLoggedIn">
               <span class="material-symbols-outlined me-2">logout</span>

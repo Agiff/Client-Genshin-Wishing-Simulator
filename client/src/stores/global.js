@@ -9,7 +9,8 @@ export const useGlobalStore = defineStore('global', {
     fourStarCharacters: [],
     banners: [],
     currentBanner: {},
-    isLoggedIn: false
+    isLoggedIn: false,
+    inventory: {}
   }),
   getters: {
     doubleCount: (state) => state.count * 2,
@@ -91,9 +92,23 @@ export const useGlobalStore = defineStore('global', {
           url: this.baseUrl + '/gachas/banners/' + id
         })
         this.currentBanner = data;
-        console.log(this.currentBanner);
       } catch (error) {
         failureAlert(error.response.data.message);
+      }
+    },
+    async fetchInventories() {
+      try {
+        const { data } = await axios({
+          method: 'GET',
+          url: this.baseUrl + '/inventories',
+          headers: {
+            access_token: localStorage.access_token
+          }
+        })
+        this.inventory = data;
+      } catch (error) {
+        failureAlert(error.response.data.message);
+        this.router.push('/');
       }
     }
   },

@@ -4,6 +4,7 @@ import LoginPage from '../views/LoginPage.vue';
 import RegisterPage from '../views/RegisterPage.vue';
 import CharacterPage from '../views/CharacterPage.vue';
 import GachaPage from '../views/GachaPage.vue';
+import InventoryPage from '../views/InventoryPage.vue';
 import NotFoundPage from '../views/NotFoundPage.vue';
 
 const router = createRouter({
@@ -33,6 +34,11 @@ const router = createRouter({
       path: '/gacha/:id',
       name: 'gacha/:id',
       component: GachaPage
+    },
+    {
+      path: '/inventory',
+      name: 'inventory',
+      component: InventoryPage
     },
     {
       path: '/:pathMatch(.*)*',
