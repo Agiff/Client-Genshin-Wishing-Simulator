@@ -38,7 +38,7 @@
         <p class="px-3 fw-bold">Weapons: {{ inventory.Weapons.length }}</p>
       </div>
       <CharacterPotrait v-for="(character, index) in inventory.Characters" :key="character.id"
-      :character="findCharacter(character)" />
+      :character="findCharacter(character)" @click="this.$router.push(`/characters/${character.name}`)"/>
     </div>
   </div>
 </template>

@@ -10,7 +10,8 @@ export const useGlobalStore = defineStore('global', {
     banners: [],
     currentBanner: {},
     isLoggedIn: false,
-    inventory: {}
+    inventory: {},
+    character: {}
   }),
   getters: {
     doubleCount: (state) => state.count * 2,
@@ -139,6 +140,18 @@ export const useGlobalStore = defineStore('global', {
       } catch (error) {
         failureAlert(error.response.data.message);
         this.router.push('/login');
+      }
+    },
+    async fetchCharacterDetail(name) {
+      try {
+        const { data } = await axios({
+          method: 'GET',
+          url: 'https://api.genshin.dev/characters/' + name
+        })
+        this.character = data;
+        console.log(this.character);
+      } catch (error) {
+        failureAlert(error.response.data.message);
       }
     }
   },
