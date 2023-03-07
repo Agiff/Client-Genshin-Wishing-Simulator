@@ -1,11 +1,15 @@
 <script>
   import { mapActions, mapState } from 'pinia';
   import { useGlobalStore } from '../stores/global';
+  import LoadingSpinner from '../components/LoadingSpinner.vue';
 
   export default {
     name: 'GachaPage',
+    components: {
+      LoadingSpinner
+    },
     computed: {
-      ...mapState(useGlobalStore, ['currentBanner'])
+      ...mapState(useGlobalStore, ['currentBanner', 'isLoading'])
     },
     methods: {
       ...mapActions(useGlobalStore, ['fetchBannerById', 'startGachaLimitedCharacter', 'startGachaLimitedCharacter10x'])
@@ -17,7 +21,8 @@
 </script>
 
 <template>
-  <div class="container">
+  <LoadingSpinner v-if="isLoading" />
+  <div v-if="!isLoading" class="container">
     <div class="d-flex flex-column justify-content-center align-items-center vh-100">
       <img :src="currentBanner.bannerImageUrl" style="width: 65vw; height: 70vh;">
       <div class="align-self-end pt-2" style="margin-right: 10%;">

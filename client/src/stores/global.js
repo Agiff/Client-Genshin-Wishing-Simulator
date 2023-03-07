@@ -10,6 +10,7 @@ export const useGlobalStore = defineStore('global', {
     banners: [],
     currentBanner: {},
     isLoggedIn: false,
+    isLoading: false,
     inventory: {},
     character: {}
   }),
@@ -30,7 +31,7 @@ export const useGlobalStore = defineStore('global', {
         this.router.push('/');
         successAlert('Logged In');
       } catch (error) {
-        console.log(error.response.data.message);
+        failureAlert(error.response.data.message);
       }
     },
     handleLogout() {
@@ -55,50 +56,59 @@ export const useGlobalStore = defineStore('global', {
     },
     async fetchFiveStarCharacters() {
       try {
+        this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
           url: this.baseUrl + '/characters/fiveStars'
         })
         this.fiveStarCharacters = data;
+        this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
       }
     },
     async fetchFourStarCharacters() {
       try {
+        this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
           url: this.baseUrl + '/characters/fourStars'
         })
         this.fourStarCharacters = data;
+        this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
       }
     },
     async fetchBanners() {
       try {
+        this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
           url: this.baseUrl + '/gachas/banners'
         })
         this.banners = data;
+        this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
       }
     },
     async fetchBannerById(id) {
       try {
+        this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
           url: this.baseUrl + '/gachas/banners/' + id
         })
         this.currentBanner = data;
+        this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
       }
     },
     async fetchInventories() {
       try {
+        this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
           url: this.baseUrl + '/inventories',
@@ -107,6 +117,7 @@ export const useGlobalStore = defineStore('global', {
           }
         })
         this.inventory = data;
+        this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
         this.router.push('/login');
@@ -144,12 +155,13 @@ export const useGlobalStore = defineStore('global', {
     },
     async fetchCharacterDetail(name) {
       try {
+        this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
           url: 'https://api.genshin.dev/characters/' + name
         })
         this.character = data;
-        console.log(this.character);
+        this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
       }

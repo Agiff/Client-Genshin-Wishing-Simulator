@@ -1,11 +1,15 @@
 <script>
-import { mapActions, mapState } from 'pinia';
-import { useGlobalStore } from '../stores/global';
+  import { mapActions, mapState } from 'pinia';
+  import { useGlobalStore } from '../stores/global';
+  import LoadingSpinner from '../components/LoadingSpinner.vue';
 
   export default {
     name: 'CharacterDetailPage',
+    components: {
+      LoadingSpinner
+    },
     computed: {
-      ...mapState(useGlobalStore, ['character', 'fourStarCharacters', 'fiveStarCharacters']),
+      ...mapState(useGlobalStore, ['character', 'fourStarCharacters', 'fiveStarCharacters', 'isLoading']),
       getImageUrl() {
         const allCharacters = [...this.fourStarCharacters, ...this.fiveStarCharacters];
         const currentCharacter = allCharacters.find(el => el.name === this.$route.params.name);
@@ -28,7 +32,8 @@ import { useGlobalStore } from '../stores/global';
 </script>
 
 <template>
-  <div class="container pt-3">
+  <LoadingSpinner v-if="isLoading" />
+  <div v-if="!isLoading" class="container pt-3">
     <div class="row d-flex justify-content-center align-items-center bg-light bg-opacity-75">
       <h1 class="fw-bold">{{ character.name }}</h1>
       <hr>
