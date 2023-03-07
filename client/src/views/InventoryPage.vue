@@ -2,14 +2,16 @@
   import { mapActions, mapState } from 'pinia';
   import { useGlobalStore } from '../stores/global';
   import CharacterPotrait from '../components/CharacterPotrait.vue';
+  import LoadingSpinner from '../components/LoadingSpinner.vue';
 
   export default {
     name: 'InventoryPage',
     components: {
-      CharacterPotrait
+      CharacterPotrait,
+      LoadingSpinner
     },
     computed: {
-      ...mapState(useGlobalStore, ['inventory', 'fourStarCharacters', 'fiveStarCharacters'])
+      ...mapState(useGlobalStore, ['inventory', 'fourStarCharacters', 'fiveStarCharacters', 'isLoading'])
     },
     methods: {
       ...mapActions(useGlobalStore, ['fetchInventories', 'fetchFourStarCharacters', 'fetchFiveStarCharacters']),
@@ -28,14 +30,15 @@
 </script>
 
 <template>
-  <div class="container pt-3">
+  <LoadingSpinner v-if="isLoading" />
+  <div v-if="!isLoading" class="container pt-3">
     <div class="row d-flex justify-content-center align-items-center bg-light bg-opacity-75">
       <div class="d-flex justify-content-center align-items-center pt-3">
         <p class="px-3 fw-bold">Primogem: {{ inventory.primogem }}</p>
         <p class="px-3 fw-bold">Intertwined Fate: {{ inventory.intertwined_fate }}</p>
         <p class="px-3 fw-bold">Acquaint Fate: {{ inventory.acquaint_fate }}</p>
         <p class="px-3 fw-bold">Starglitter: {{ inventory.starglitter }}</p>
-        <p class="px-3 fw-bold">Weapons: {{ inventory.Weapons.length }}</p>
+        <p class="px-3 fw-bold">Weapons: {{ inventory.Weapons ? inventory.Weapons.length : 0 }}</p>
       </div>
       <CharacterPotrait v-for="(character, index) in inventory.Characters" :key="character.id"
       :character="findCharacter(character)" @click="this.$router.push(`/characters/${character.name}`)"/>
