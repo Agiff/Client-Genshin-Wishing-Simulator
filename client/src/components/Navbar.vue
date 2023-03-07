@@ -35,6 +35,10 @@ import { useGlobalStore } from '../stores/global';
               <span class="material-symbols-outlined me-2">home</span>
               <router-link class="nav-link" to="/">Home</router-link>
             </li>
+            <li class="nav-item d-flex align-items-center my-2">
+              <span class="material-symbols-outlined me-2">person</span>
+              <router-link class="nav-link" to="/characters">Characters</router-link>
+            </li>
             <li class="nav-item d-flex align-items-center my-2" v-if="!isLoggedIn">
               <span class="material-symbols-outlined me-2">login</span>
               <router-link class="nav-link" to="/login">Sign In</router-link>

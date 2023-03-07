@@ -80,7 +80,6 @@ export const useGlobalStore = defineStore('global', {
           url: this.baseUrl + '/gachas/banners'
         })
         this.banners = data;
-        console.log(this.banners);
       } catch (error) {
         failureAlert(error.response.data.message);
       }
