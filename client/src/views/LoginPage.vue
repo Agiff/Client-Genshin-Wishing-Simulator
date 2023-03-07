@@ -7,7 +7,7 @@
     data() {
       return {
         inputLogin: {
-          username: '',
+          emailUsername: '',
           password: ''
         }
       }
@@ -24,9 +24,9 @@
       <h1 class="text-center mb-4 fw-bold">Login</h1>
       <form id="login-form" @submit.prevent="handleLogin(this.inputLogin)">
         <div class="mb-3">
-          <label for="login-username" class="form-label fw-semibold">Username</label>
-          <input type="text" class="form-control" id="login-username" aria-describedby="login-help"
-          v-model="inputLogin.username" />
+          <label for="login-emailUsername" class="form-label fw-semibold">Username / Email</label>
+          <input type="text" class="form-control" id="login-emailUsername" aria-describedby="login-help"
+          v-model="inputLogin.emailUsername" />
         </div>
         <div class="mb-3">
           <label for="login-password" class="form-label fw-semibold">Password</label>
