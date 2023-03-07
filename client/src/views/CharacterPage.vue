@@ -25,7 +25,7 @@
   <div class="container pt-3">
     <div class="row d-flex justify-content-center align-items-center bg-light bg-opacity-75">
       <CharacterPotrait v-for="(character, index) in fiveStarCharacters" :key="character.id"
-      :character="character" />
+      :character="character" @click="this.$router.push(`/characters/${character.name}`)"/>
     </div>
   </div>
 </template>
