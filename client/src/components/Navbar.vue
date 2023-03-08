@@ -57,7 +57,7 @@ import { useGlobalStore } from '../stores/global';
             </li>
             <li class="nav-item d-flex align-items-center my-2" v-if="isLoggedIn">
               <span class="material-symbols-outlined me-2">credit_card</span>
-              <a @click.prevent="topup(1000000)" class="nav-link" href="#">Top Up</a>
+              <router-link class="nav-link" to="/topup">Top Up</router-link>
             </li>
             <li class="nav-item d-flex align-items-center my-2" v-if="isLoggedIn">
               <span class="material-symbols-outlined me-2">logout</span>
