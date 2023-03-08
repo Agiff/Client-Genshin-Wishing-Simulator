@@ -11,8 +11,12 @@ export const useGlobalStore = defineStore('global', {
     currentBanner: {},
     isLoggedIn: false,
     isLoading: false,
+    isGacha: '',
     inventory: {},
-    character: {}
+    character: {},
+    pities: {},
+    gachaResult: {},
+    gachaResult10x: {}
   }),
   getters: {
     doubleCount: (state) => state.count * 2,
@@ -133,6 +137,8 @@ export const useGlobalStore = defineStore('global', {
           }
         })
         console.log(data);
+        this.gachaResult = data;
+        this.fetchPities();
       } catch (error) {
         failureAlert(error.response.data.message);
         this.router.push('/login');
@@ -148,6 +154,8 @@ export const useGlobalStore = defineStore('global', {
           }
         })
         console.log(data);
+        this.gachaResult10x = data;
+        this.fetchPities();
       } catch (error) {
         failureAlert(error.response.data.message);
         this.router.push('/login');
@@ -164,6 +172,24 @@ export const useGlobalStore = defineStore('global', {
         this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
+      }
+    },
+    async fetchPities() {
+      try {
+        this.isLoading = true;
+        const { data } = await axios({
+          method: 'GET',
+          url: this.baseUrl + '/gachas/pities',
+          headers: {
+            access_token: localStorage.access_token
+          }
+        })
+        this.pities = data;
+        this.isLoading = false;
+        console.log(this.pities);
+      } catch (error) {
+        failureAlert(error.response.data.message);
+        this.router.push('/login');
       }
     }
   },
