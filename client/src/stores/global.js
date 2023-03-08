@@ -190,7 +190,7 @@ export const useGlobalStore = defineStore('global', {
         this.router.push('/login');
       }
     },
-    async topup(price) {
+    async topup(price, quantity) {
       try {
         const { data } = await axios({
           method: 'POST',
@@ -200,11 +200,12 @@ export const useGlobalStore = defineStore('global', {
             access_token: localStorage.access_token
           }
         })
+
+        const cb = this.handleTopup;
+
         window.snap.pay(data.token, {
           onSuccess: function(result){
-            /* You may add your own implementation here */
-            console.log(result);
-            console.log('success');
+            cb({ primogem: quantity });
           }
         })
       } catch (error) {
@@ -225,6 +226,23 @@ export const useGlobalStore = defineStore('global', {
         
         this.fetchInventories();
         successAlert('Purchase success');
+      } catch (error) {
+        failureAlert(error.response.data.message);
+      }
+    },
+    async handleTopup(userInput) {
+      try {
+        await axios({
+          method: "PATCH",
+          url: this.baseUrl + "/inventories/topup",
+          headers: {
+            access_token: localStorage.access_token
+          },
+          data: userInput
+        });
+        
+        this.fetchInventories();
+        successAlert('Topup success');
       } catch (error) {
         failureAlert(error.response.data.message);
       }
