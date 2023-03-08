@@ -52,6 +52,10 @@ import { useGlobalStore } from '../stores/global';
               <router-link class="nav-link" to="/inventory">Inventory</router-link>
             </li>
             <li class="nav-item d-flex align-items-center my-2" v-if="isLoggedIn">
+              <span class="material-symbols-outlined me-2">storefront</span>
+              <router-link class="nav-link" to="/shop">Shop</router-link>
+            </li>
+            <li class="nav-item d-flex align-items-center my-2" v-if="isLoggedIn">
               <span class="material-symbols-outlined me-2">logout</span>
               <a @click.prevent="handleLogout" class="nav-link" href="#">Logout</a>
             </li>

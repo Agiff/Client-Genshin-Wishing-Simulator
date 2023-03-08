@@ -6,6 +6,7 @@ import CharacterPage from '../views/CharacterPage.vue';
 import GachaPage from '../views/GachaPage.vue';
 import InventoryPage from '../views/InventoryPage.vue';
 import CharacterDetailPage from '../views/CharacterDetailPage.vue';
+import ShopPage from '../views/ShopPage.vue';
 import NotFoundPage from '../views/NotFoundPage.vue';
 
 const router = createRouter({
@@ -47,6 +48,11 @@ const router = createRouter({
       component: CharacterDetailPage
     },
     {
+      path: '/shop',
+      name: 'shop',
+      component: ShopPage
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: NotFoundPage
@@ -58,6 +64,7 @@ router.beforeEach((to, from, next) => {
   if (to.name === 'login' && localStorage.access_token) next({ name: 'home' })
   else if (to.name === 'register' && localStorage.access_token) next({ name: 'home' })
   else if (to.name === 'inventory' && !localStorage.access_token) next({ name: 'login' })
+  else if (to.name === 'shop' && !localStorage.access_token) next({ name: 'login' })
   else next()
 })
 
