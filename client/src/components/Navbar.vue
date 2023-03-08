@@ -8,7 +8,7 @@ import { useGlobalStore } from '../stores/global';
       ...mapWritableState(useGlobalStore, ['isLoggedIn'])
     },
     methods: {
-      ...mapActions(useGlobalStore, ['handleLogout'])
+      ...mapActions(useGlobalStore, ['handleLogout', 'topup'])
     },
     created() {
       if (localStorage.access_token) {
@@ -54,6 +54,10 @@ import { useGlobalStore } from '../stores/global';
             <li class="nav-item d-flex align-items-center my-2" v-if="isLoggedIn">
               <span class="material-symbols-outlined me-2">storefront</span>
               <router-link class="nav-link" to="/shop">Shop</router-link>
+            </li>
+            <li class="nav-item d-flex align-items-center my-2" v-if="isLoggedIn">
+              <span class="material-symbols-outlined me-2">credit_card</span>
+              <a @click.prevent="topup(1000000)" class="nav-link" href="#">Top Up</a>
             </li>
             <li class="nav-item d-flex align-items-center my-2" v-if="isLoggedIn">
               <span class="material-symbols-outlined me-2">logout</span>
