@@ -189,6 +189,28 @@ export const useGlobalStore = defineStore('global', {
         failureAlert(error.response.data.message);
         this.router.push('/login');
       }
+    },
+    async topup(price) {
+      try {
+        const { data } = await axios({
+          method: 'POST',
+          url: this.baseUrl + '/users/midtransToken',
+          data: { price },
+          headers: {
+            access_token: localStorage.access_token
+          }
+        })
+        window.snap.pay(data.token, {
+          onSuccess: function(result){
+            /* You may add your own implementation here */
+            console.log(result);
+            console.log('success');
+          }
+        })
+      } catch (error) {
+        console.log(error);
+        failureAlert(error.response.data.message);
+      }
     }
   },
 })
