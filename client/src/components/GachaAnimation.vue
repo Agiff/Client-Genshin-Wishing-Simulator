@@ -61,6 +61,7 @@
     },
     beforeUnmount() {
       clearTimeout(this.timeoutId);
+      this.$refs.gifImage.src = "";
     }
   }
 </script>
@@ -69,9 +70,9 @@
   <LoadingSpinner v-if="isLoading"/>
   <div style="position: relative;" v-show="timeout > 0 && !isLoading">
     <div @click="stopGif" class="btn btn-warning" style="position: absolute; bottom: 10px; right: 10px;">Skip</div>
-    <img class="vh-100 vw-100" v-if="isGacha === 'Blue Star'" :src="'https://cdn.discordapp.com/attachments/1082853942670655610/1082899285324083241/SingleBlueNoLoopWhite.gif?' + Math.random()">
-    <img class="vh-100 vw-100" v-if="isGacha === 'Purple Star'" :src="'https://cdn.discordapp.com/attachments/1082853942670655610/1082899314789072926/SinglePurpleNoLoopWhite.gif?' + Math.random()">
-    <img class="vh-100 vw-100" v-if="isGacha === 'Gold Star'" :src="'https://cdn.discordapp.com/attachments/1082853942670655610/1082899325471965184/SingleGoldNoLoopWhite.gif?' + Math.random()">
+    <img ref="gifImage" class="vh-100 vw-100" v-if="isGacha === 'Blue Star'" :src="'https://cdn.discordapp.com/attachments/1082853942670655610/1082899285324083241/SingleBlueNoLoopWhite.gif?' + Math.random()">
+    <img ref="gifImage" class="vh-100 vw-100" v-if="isGacha === 'Purple Star'" :src="'https://cdn.discordapp.com/attachments/1082853942670655610/1082899314789072926/SinglePurpleNoLoopWhite.gif?' + Math.random()">
+    <img ref="gifImage" class="vh-100 vw-100" v-if="isGacha === 'Gold Star'" :src="'https://cdn.discordapp.com/attachments/1082853942670655610/1082899325471965184/SingleGoldNoLoopWhite.gif?' + Math.random()">
   </div>
   <div class="container vh-100 d-flex flex-column justify-content-center align-items-center" v-if="timeout === 0 && !isLoading">
     <div class=" bg-light bg-opacity-75 text-center p-5">
