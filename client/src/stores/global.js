@@ -136,7 +136,7 @@ export const useGlobalStore = defineStore('global', {
             access_token: localStorage.access_token
           }
         })
-        console.log(data);
+        // console.log(data);
         this.gachaResult = data;
         this.fetchPities();
       } catch (error) {
@@ -186,7 +186,7 @@ export const useGlobalStore = defineStore('global', {
         })
         this.pities = data;
         this.isLoading = false;
-        console.log(this.pities);
+        // console.log(this.pities);
       } catch (error) {
         failureAlert(error.response.data.message);
         this.router.push('/login');
