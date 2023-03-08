@@ -70,17 +70,17 @@
   <GachaAnimation v-if="isGacha !== ''"/>
   <div v-if="!isLoading && isGacha === ''" class="container">
     <div class="d-flex justify-content-center align-items-center">
-      <div class="bg-light" style="width: 20%; height: 100%;">
-        <p>Guaranteed Gold: {{ getGuaraGoldStatus }}</p>
+      <div class="custom-card d-flex bg-light flex-column justify-content-center align-items-center bg-opacity-75 text-center">
+        <p class="pt-3">Guaranteed Gold: {{ getGuaraGoldStatus }}</p>
         <p>Guaranteed Purple: {{ getGuaraPurpleStatus }}</p>
         <p>Gold Star Pity: {{ pities.charLimitedGoldPity }}</p>
         <p>Purple Star Pity: {{ pities.charLimitedPurplePity }}</p>
-        <hr>
         <p>Gold Star Rate: {{ getGoldStarRate }}</p>
         <p>Purple Star Rate: 5100</p>
-        <p>RNG: {{ gachaResult.RNG && !delay ? gachaResult.RNG : 0 }}</p>
+        <p>RNG: {{ gachaResult.RNG && !delay ? gachaResult.RNG : '-' }}</p>
         <hr>
-        <p>Obtained: {{ gachaResult.result && !delay ? getObtainedName : '-' }}</p>
+        <p>Obtained:</p>
+        <p class="fw-semibold">{{ gachaResult.result && !delay ? getObtainedName : '-' }}</p>
       </div>
       <div class="d-flex flex-column justify-content-center align-items-center vh-100">
         <img :src="currentBanner.bannerImageUrl" style="width: 65vw; height: 70vh;">
@@ -92,3 +92,14 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+  .custom-card {
+    width: 15vw;
+    height: 70vh;
+    border-radius: 10px;
+    position: absolute;
+    top: 8.5%;
+    left: 1%;
+  }
+</style>
