@@ -211,6 +211,23 @@ export const useGlobalStore = defineStore('global', {
         console.log(error);
         failureAlert(error.response.data.message);
       }
+    },
+    async handleBuy(userInput) {
+      try {
+        await axios({
+          method: "PUT",
+          url: this.baseUrl + "/inventories/buy",
+          headers: {
+            access_token: localStorage.access_token
+          },
+          data: userInput
+        });
+        
+        this.fetchInventories();
+        successAlert('Purchase success');
+      } catch (error) {
+        failureAlert(error.response.data.message);
+      }
     }
   },
 })
