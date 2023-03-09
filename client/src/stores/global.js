@@ -247,9 +247,9 @@ export const useGlobalStore = defineStore('global', {
         failureAlert(error.response.data.message);
       }
     },
-    throwUser() {
-      this.router.push('/shop');
-      failureAlert("You don't have enough fate");
+    throwUser(message, destination) {
+      this.router.push(destination);
+      failureAlert(message);
     }
   },
 })
