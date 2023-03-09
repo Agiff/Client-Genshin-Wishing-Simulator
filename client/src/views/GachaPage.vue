@@ -11,7 +11,7 @@
       GachaAnimation
     },
     computed: {
-      ...mapState(useGlobalStore, ['currentBanner', 'isLoading', 'pities', 'gachaResult', 'gachaResult10x']),
+      ...mapState(useGlobalStore, ['currentBanner', 'isLoading', 'pities', 'gachaResult', 'gachaResult10x', 'inventory']),
       ...mapWritableState(useGlobalStore, ['isGacha']),
       getGuaraGoldStatus() {
         if (this.pities.guaranteedGoldCharacter) return 'On';
@@ -31,22 +31,27 @@
       }
     },
     methods: {
-      ...mapActions(useGlobalStore, ['fetchBannerById', 'startGachaLimitedCharacter', 'startGachaLimitedCharacter10x', 'fetchPities']),
+      ...mapActions(useGlobalStore, ['fetchBannerById', 'startGachaLimitedCharacter', 'startGachaLimitedCharacter10x', 'fetchPities', 'fetchInventories', 'throwUser']),
       startGacha(id) {
-        this.delay = true;
-        this.startGachaLimitedCharacter(id);
-        setTimeout(() => {
-          this.delay = false;
-          if (this.gachaResult.result.title === 'Blue Star') {
-            this.isGacha = this.gachaResult.result.title;
-          }
-          if (this.gachaResult.result.title === 'Purple Star') {
-            this.isGacha = this.gachaResult.result.title;
-          }
-          if (this.gachaResult.result.title === 'Gold Star') {
-            this.isGacha = this.gachaResult.result.title;
-          }
-        }, 100);
+        console.log(this.inventory);
+        if (this.inventory.intertwined_fate < 1) {
+          this.throwUser();
+        } else {
+          this.delay = true;
+          this.startGachaLimitedCharacter(id);
+          setTimeout(() => {
+            this.delay = false;
+            if (this.gachaResult.result.title === 'Blue Star') {
+              this.isGacha = this.gachaResult.result.title;
+            }
+            if (this.gachaResult.result.title === 'Purple Star') {
+              this.isGacha = this.gachaResult.result.title;
+            }
+            if (this.gachaResult.result.title === 'Gold Star') {
+              this.isGacha = this.gachaResult.result.title;
+            }
+          }, 100);
+        }
       },
       startGacha10x(id) {
         this.startGachaLimitedCharacter10x(id);
@@ -56,6 +61,7 @@
     created() {
       this.fetchBannerById(this.$route.params.id);
       this.fetchPities();
+      this.fetchInventories();
     },
     data() {
       return {
@@ -84,9 +90,9 @@
       </div>
       <div class="d-flex flex-column justify-content-center align-items-center vh-100">
         <img :src="currentBanner.bannerImageUrl" style="width: 65vw; height: 70vh;">
-        <div class="align-self-end pt-2" style="margin-right: 10%;">
-          <div @click="startGacha(this.$route.params.id)" class="btn btn-primary m-3 shadow p-2" style="width: 15vh;">Wish x1</div>
-          <div @click="startGacha10x(this.$route.params.id)" class="btn btn-primary m-3 shadow p-2" style="width: 15vh;">Wish x10</div>
+        <div class="align-self-end pt-2">
+          <div @click="startGacha(this.$route.params.id)" class="btn btn-primary m-3 shadow p-2" style="width: 20vh;">Wish</div>
+          <!-- <div @click="startGacha10x(this.$route.params.id)" class="btn btn-primary m-3 shadow p-2" style="width: 15vh;">Wish x10</div> -->
         </div>
       </div>
     </div>

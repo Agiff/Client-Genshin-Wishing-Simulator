@@ -246,6 +246,10 @@ export const useGlobalStore = defineStore('global', {
       } catch (error) {
         failureAlert(error.response.data.message);
       }
+    },
+    throwUser() {
+      this.router.push('/shop');
+      failureAlert("You don't have enough fate");
     }
   },
 })
