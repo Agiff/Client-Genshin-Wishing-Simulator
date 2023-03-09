@@ -4,7 +4,8 @@ import { failureAlert, successAlert } from '../helpers/sweetalert';
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({ 
-    baseUrl: 'http://localhost:3000',
+    // baseUrl: 'http://localhost:3000',
+    baseUrl: 'https://genshin-wishing-simulator-production.up.railway.app',
     fiveStarCharacters: [],
     fourStarCharacters: [],
     banners: [],
@@ -128,20 +129,27 @@ export const useGlobalStore = defineStore('global', {
       }
     },
     async startGachaLimitedCharacter(id) {
-      try {
-        const { data } = await axios({
-          method: 'GET',
-          url: this.baseUrl + '/gachas/limited/' + id,
-          headers: {
-            access_token: localStorage.access_token
-          }
-        })
-        this.gachaResult = data;
-        this.fetchPities();
-      } catch (error) {
-        failureAlert(error.response.data.message);
-        this.router.push('/login');
-      }
+      // try {
+      //   const { data } = await axios({
+      //     method: 'GET',
+      //     url: this.baseUrl + '/gachas/limited/' + id,
+      //     headers: {
+      //       access_token: localStorage.access_token
+      //     }
+      //   })
+      //   this.gachaResult = data;
+      //   this.fetchPities();
+      // } catch (error) {
+      //   failureAlert(error.response.data.message);
+      //   this.router.push('/login');
+      // }
+      return axios({
+        method: 'GET',
+        url: this.baseUrl + '/gachas/limited/' + id,
+        headers: {
+          access_token: localStorage.access_token
+        }
+      })
     },
     async startGachaLimitedCharacter10x(id) {
       try {
