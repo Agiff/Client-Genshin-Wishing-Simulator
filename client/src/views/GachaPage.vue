@@ -33,9 +33,9 @@
     methods: {
       ...mapActions(useGlobalStore, ['fetchBannerById', 'startGachaLimitedCharacter', 'startGachaLimitedCharacter10x', 'fetchPities', 'fetchInventories', 'throwUser']),
       startGacha(id) {
-        console.log(this.inventory);
+        if (this.currentBanner.id === 1) return this.throwUser("This banner is currently unavailable", '/');
         if (this.inventory.intertwined_fate < 1) {
-          this.throwUser();
+          this.throwUser("You don't have enough fate", '/shop');
         } else {
           this.delay = true;
           this.startGachaLimitedCharacter(id);
