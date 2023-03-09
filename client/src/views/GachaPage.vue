@@ -3,6 +3,7 @@
   import { useGlobalStore } from '../stores/global';
   import LoadingSpinner from '../components/LoadingSpinner.vue';
   import GachaAnimation from '../components/GachaAnimation.vue';
+  import { failureAlert, successAlert } from '../helpers/sweetalert';
 
   export default {
     name: 'GachaPage',
@@ -11,8 +12,8 @@
       GachaAnimation
     },
     computed: {
-      ...mapState(useGlobalStore, ['currentBanner', 'isLoading', 'pities', 'gachaResult', 'gachaResult10x', 'inventory']),
-      ...mapWritableState(useGlobalStore, ['isGacha']),
+      ...mapState(useGlobalStore, ['currentBanner', 'isLoading', 'pities', 'inventory']),
+      ...mapWritableState(useGlobalStore, ['isGacha', 'gachaResult', 'gachaResult10x']),
       getGuaraGoldStatus() {
         if (this.pities.guaranteedGoldCharacter) return 'On';
         else return 'Off';
@@ -31,15 +32,17 @@
       }
     },
     methods: {
-      ...mapActions(useGlobalStore, ['fetchBannerById', 'startGachaLimitedCharacter', 'startGachaLimitedCharacter10x', 'fetchPities', 'fetchInventories', 'throwUser']),
-      startGacha(id) {
-        if (this.currentBanner.id === 1) return this.throwUser("This banner is currently unavailable", '/');
-        if (this.inventory.intertwined_fate < 1) {
-          this.throwUser("You don't have enough fate", '/shop');
-        } else {
-          this.delay = true;
-          this.startGachaLimitedCharacter(id);
-          setTimeout(() => {
+      ...mapActions(useGlobalStore, ['fetchBannerById', 'startGachaLimitedCharacter', 'startGachaLimitedCharacter10x', 'fetchPities', 'fetchInventories', 'throwUser', 'fetchPities']),
+      async startGacha(id) {
+        try {
+          if (this.currentBanner.id === 1) return this.throwUser("This banner is currently unavailable", '/');
+          if (this.inventory.intertwined_fate < 1) {
+            this.throwUser("You don't have enough fate", '/shop');
+          } else {
+            this.delay = true;
+            const { data } = await this.startGachaLimitedCharacter(id);
+            this.gachaResult = data;
+            this.fetchPities();
             this.delay = false;
             if (this.gachaResult.result.title === 'Blue Star') {
               this.isGacha = this.gachaResult.result.title;
@@ -50,7 +53,10 @@
             if (this.gachaResult.result.title === 'Gold Star') {
               this.isGacha = this.gachaResult.result.title;
             }
-          }, 100);
+          }
+        } catch (error) {
+          failureAlert(error);
+          this.$router.push('/login');
         }
       },
       startGacha10x(id) {

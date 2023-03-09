@@ -57,7 +57,7 @@
         this.timeoutId = setTimeout(() => {
           this.timeout = 0;
         }, this.timeout);
-      }, 500);
+      }, 1000);
     },
     beforeUnmount() {
       clearTimeout(this.timeoutId);
