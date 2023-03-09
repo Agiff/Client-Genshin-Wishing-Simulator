@@ -4,11 +4,20 @@ import { failureAlert, successAlert } from '../helpers/sweetalert';
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({ 
-    baseUrl: 'http://localhost:3000',
+    // baseUrl: 'http://localhost:3000',
+    baseUrl: 'https://genshin-wishing-simulator-production.up.railway.app',
     fiveStarCharacters: [],
     fourStarCharacters: [],
     banners: [],
-    currentBanner: {}
+    currentBanner: {},
+    isLoggedIn: false,
+    isLoading: false,
+    isGacha: '',
+    inventory: {},
+    character: {},
+    pities: {},
+    gachaResult: {},
+    gachaResult10x: {}
   }),
   getters: {
     doubleCount: (state) => state.count * 2,
@@ -22,12 +31,19 @@ export const useGlobalStore = defineStore('global', {
           data: userInput
         });
 
+        this.isLoggedIn = true;
         localStorage.access_token = data.access_token;
         this.router.push('/');
         successAlert('Logged In');
       } catch (error) {
-        console.log(error.response.data.message);
+        failureAlert(error.response.data.message);
       }
+    },
+    handleLogout() {
+      this.isLoggedIn = false;
+      localStorage.clear();
+      this.router.push('/login');
+      successAlert('Logged Out');
     },
     async handleRegister(userInput) {
       try {
@@ -45,47 +61,203 @@ export const useGlobalStore = defineStore('global', {
     },
     async fetchFiveStarCharacters() {
       try {
+        this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
           url: this.baseUrl + '/characters/fiveStars'
         })
         this.fiveStarCharacters = data;
+        this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
       }
     },
     async fetchFourStarCharacters() {
       try {
+        this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
           url: this.baseUrl + '/characters/fourStars'
         })
         this.fourStarCharacters = data;
+        this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
       }
     },
     async fetchBanners() {
       try {
+        this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
           url: this.baseUrl + '/gachas/banners'
         })
         this.banners = data;
+        this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
       }
     },
     async fetchBannerById(id) {
       try {
+        this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
           url: this.baseUrl + '/gachas/banners/' + id
         })
         this.currentBanner = data;
+        this.isLoading = false;
       } catch (error) {
         failureAlert(error.response.data.message);
       }
+    },
+    async fetchInventories() {
+      try {
+        this.isLoading = true;
+        const { data } = await axios({
+          method: 'GET',
+          url: this.baseUrl + '/inventories',
+          headers: {
+            access_token: localStorage.access_token
+          }
+        })
+        this.inventory = data;
+        this.isLoading = false;
+      } catch (error) {
+        failureAlert(error.response.data.message);
+        this.router.push('/login');
+      }
+    },
+    async startGachaLimitedCharacter(id) {
+      // try {
+      //   const { data } = await axios({
+      //     method: 'GET',
+      //     url: this.baseUrl + '/gachas/limited/' + id,
+      //     headers: {
+      //       access_token: localStorage.access_token
+      //     }
+      //   })
+      //   this.gachaResult = data;
+      //   this.fetchPities();
+      // } catch (error) {
+      //   failureAlert(error.response.data.message);
+      //   this.router.push('/login');
+      // }
+      return axios({
+        method: 'GET',
+        url: this.baseUrl + '/gachas/limited/' + id,
+        headers: {
+          access_token: localStorage.access_token
+        }
+      })
+    },
+    async startGachaLimitedCharacter10x(id) {
+      try {
+        const { data } = await axios({
+          method: 'GET',
+          url: this.baseUrl + '/gachas/limited/' + id + '/10x',
+          headers: {
+            access_token: localStorage.access_token
+          }
+        })
+        console.log(data);
+        this.gachaResult10x = data;
+        this.fetchPities();
+      } catch (error) {
+        failureAlert(error.response.data.message);
+        this.router.push('/login');
+      }
+    },
+    async fetchCharacterDetail(name) {
+      try {
+        this.isLoading = true;
+        const { data } = await axios({
+          method: 'GET',
+          url: 'https://api.genshin.dev/characters/' + name
+        })
+        this.character = data;
+        this.isLoading = false;
+      } catch (error) {
+        failureAlert(error.response.data.message);
+      }
+    },
+    async fetchPities() {
+      try {
+        this.isLoading = true;
+        const { data } = await axios({
+          method: 'GET',
+          url: this.baseUrl + '/gachas/pities',
+          headers: {
+            access_token: localStorage.access_token
+          }
+        })
+        this.pities = data;
+        this.isLoading = false;
+      } catch (error) {
+        failureAlert(error.response.data.message);
+        this.router.push('/login');
+      }
+    },
+    async topup(price, quantity) {
+      try {
+        const { data } = await axios({
+          method: 'POST',
+          url: this.baseUrl + '/users/midtransToken',
+          data: { price },
+          headers: {
+            access_token: localStorage.access_token
+          }
+        })
+
+        const cb = this.handleTopup;
+
+        window.snap.pay(data.token, {
+          onSuccess: function(result){
+            cb({ primogem: quantity });
+          }
+        })
+      } catch (error) {
+        console.log(error);
+        failureAlert(error.response.data.message);
+      }
+    },
+    async handleBuy(userInput) {
+      try {
+        await axios({
+          method: "PUT",
+          url: this.baseUrl + "/inventories/buy",
+          headers: {
+            access_token: localStorage.access_token
+          },
+          data: userInput
+        });
+        
+        this.fetchInventories();
+        successAlert('Purchase success');
+      } catch (error) {
+        failureAlert(error.response.data.message);
+      }
+    },
+    async handleTopup(userInput) {
+      try {
+        await axios({
+          method: "PATCH",
+          url: this.baseUrl + "/inventories/topup",
+          headers: {
+            access_token: localStorage.access_token
+          },
+          data: userInput
+        });
+        
+        this.fetchInventories();
+        successAlert('Topup success');
+      } catch (error) {
+        failureAlert(error.response.data.message);
+      }
+    },
+    throwUser(message, destination) {
+      this.router.push(destination);
+      failureAlert(message);
     }
   },
 })

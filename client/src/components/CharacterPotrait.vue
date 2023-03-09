@@ -1,16 +1,24 @@
 <script>
   export default {
-    name: 'CharacterPotrait'
+    name: 'CharacterPotrait',
+    props: ['character']
   }
 </script>
 
 <template>
-  <div class="card" style="width: 18rem;">
-    <img src="..." class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
-    </div>
+  <div class="card m-2 character-potrait" style="width: 8rem;">
+    <img :src="character.imageUrl" class="card-img-top" alt="...">
   </div>
 </template>
+
+<style scoped>
+  .character-potrait {
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+  .character-potrait:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+  }
+</style>
