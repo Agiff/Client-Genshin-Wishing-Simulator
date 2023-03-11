@@ -32,32 +32,10 @@
       }
     },
     methods: {
-      ...mapActions(useGlobalStore, ['fetchBannerById', 'startGachaLimitedCharacter', 'startGachaLimitedCharacter10x', 'fetchPities', 'fetchInventories', 'throwUser', 'fetchPities']),
-      async startGacha(id) {
-        try {
-          if (this.currentBanner.id === 1) return this.throwUser("This banner is currently unavailable", '/');
-          if (this.inventory.intertwined_fate < 1) {
-            this.throwUser("You don't have enough fate", '/shop');
-          } else {
-            this.delay = true;
-            const { data } = await this.startGachaLimitedCharacter(id);
-            this.gachaResult = data;
-            this.fetchPities();
-            this.delay = false;
-            if (this.gachaResult.result.title === 'Blue Star') {
-              this.isGacha = this.gachaResult.result.title;
-            }
-            if (this.gachaResult.result.title === 'Purple Star') {
-              this.isGacha = this.gachaResult.result.title;
-            }
-            if (this.gachaResult.result.title === 'Gold Star') {
-              this.isGacha = this.gachaResult.result.title;
-            }
-          }
-        } catch (error) {
-          failureAlert(error);
-          this.$router.push('/login');
-        }
+      ...mapActions(useGlobalStore, ['fetchBannerById', 'startGachaLimitedCharacter', 'startGachaLimitedCharacter10x', 'fetchPities', 'fetchInventories', 'throwUser', 'fetchPities', 'fetchFiveStarCharacters', 'fetchFourStarCharacters']),
+      startGacha(id) {
+        this.startGachaLimitedCharacter(id);
+        this.isGacha = true;
       },
       startGacha10x(id) {
         this.startGachaLimitedCharacter10x(id);
@@ -68,6 +46,8 @@
       this.fetchBannerById(this.$route.params.id);
       this.fetchPities();
       this.fetchInventories();
+      this.fetchFourStarCharacters();
+      this.fetchFiveStarCharacters();
     },
     data() {
       return {
@@ -78,9 +58,8 @@
 </script>
 
 <template>
-  <LoadingSpinner v-if="isLoading" />
-  <GachaAnimation v-if="isGacha !== ''"/>
-  <div v-if="!isLoading && isGacha === ''" class="container">
+  <GachaAnimation type="single" v-if="isGacha !== ''"/>
+  <div v-if="isGacha === ''" class="container">
     <div class="d-flex justify-content-center align-items-center">
       <div class="custom-card d-flex bg-light flex-column justify-content-center align-items-center bg-opacity-75 text-center">
         <p class="pt-3">Guaranteed Gold: {{ getGuaraGoldStatus }}</p>
@@ -89,10 +68,10 @@
         <p>Purple Star Pity: {{ pities.charLimitedPurplePity }}</p>
         <p>Gold Star Rate: {{ getGoldStarRate }}</p>
         <p>Purple Star Rate: 5100</p>
-        <p>RNG: {{ gachaResult.RNG && !delay ? gachaResult.RNG : '-' }}</p>
+        <p>RNG: {{ gachaResult.RNG ? gachaResult.RNG : '-' }}</p>
         <hr>
         <p>Obtained:</p>
-        <p class="fw-semibold">{{ gachaResult.result && !delay ? getObtainedName : '-' }}</p>
+        <p class="fw-semibold">{{ gachaResult.result ? getObtainedName : '-' }}</p>
       </div>
       <div class="d-flex flex-column justify-content-center align-items-center vh-100">
         <img :src="currentBanner.bannerImageUrl" style="width: 65vw; height: 70vh;">

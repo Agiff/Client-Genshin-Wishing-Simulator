@@ -17,7 +17,11 @@ export const useGlobalStore = defineStore('global', {
     character: {},
     pities: {},
     gachaResult: {},
-    gachaResult10x: {}
+    gachaResult10x: {},
+    obtained: {
+      rarity: 3,
+      imageUrl: 'https://static.wikia.nocookie.net/gensin-impact/images/2/2f/Weapon_Dull_Blade.png'
+    }
   }),
   getters: {
     doubleCount: (state) => state.count * 2,
@@ -129,27 +133,48 @@ export const useGlobalStore = defineStore('global', {
       }
     },
     async startGachaLimitedCharacter(id) {
-      // try {
-      //   const { data } = await axios({
-      //     method: 'GET',
-      //     url: this.baseUrl + '/gachas/limited/' + id,
-      //     headers: {
-      //       access_token: localStorage.access_token
-      //     }
-      //   })
-      //   this.gachaResult = data;
-      //   this.fetchPities();
-      // } catch (error) {
-      //   failureAlert(error.response.data.message);
-      //   this.router.push('/login');
-      // }
-      return axios({
-        method: 'GET',
-        url: this.baseUrl + '/gachas/limited/' + id,
-        headers: {
-          access_token: localStorage.access_token
+      try {
+        if (this.currentBanner.id === 1) return this.throwUser("This banner is currently unavailable", '/');
+        if (this.inventory.intertwined_fate < 1) {
+          this.throwUser("You don't have enough fate", '/shop');
+        } else {
+          const { data } = await axios({
+            method: 'GET',
+            url: this.baseUrl + '/gachas/limited/' + id,
+            headers: {
+              access_token: localStorage.access_token
+            }
+          })
+          this.gachaResult = data;
+          this.fetchPities();
+          if (this.gachaResult.result.title === 'Blue Star') {
+            this.isGacha = this.gachaResult.result.title;
+            this.obtained.rarity = 3;
+          }
+          if (this.gachaResult.result.title === 'Purple Star') {
+            this.isGacha = this.gachaResult.result.title;
+            this.obtained.rarity = 4;
+          }
+          if (this.gachaResult.result.title === 'Gold Star') {
+            this.isGacha = this.gachaResult.result.title;
+            this.obtained.rarity = 5;
+          }
+          this.obtained.imageUrl = 'https://static.wikia.nocookie.net/gensin-impact/images/2/2f/Weapon_Dull_Blade.png';
+
+          let findChar;
+          findChar = this.fourStarCharacters.find(el => el.name === this.gachaResult.result.obtained);
+          if (findChar) {
+            this.obtained.imageUrl = findChar.imageUrl;
+          }
+          findChar = this.fiveStarCharacters.find(el => el.name === this.gachaResult.result.obtained);
+          if (findChar) {
+            this.obtained.imageUrl = findChar.imageUrl;
+          }
         }
-      })
+      } catch (error) {
+        failureAlert(error.response.data.message);
+        this.router.push('/login');
+      }
     },
     async startGachaLimitedCharacter10x(id) {
       try {
