@@ -9,6 +9,7 @@ import CharacterDetailPage from '../views/CharacterDetailPage.vue';
 import ShopPage from '../views/ShopPage.vue';
 import TopupPage from '../views/TopupPage.vue';
 import NotFoundPage from '../views/NotFoundPage.vue';
+import { useGlobalStore } from '../stores/global';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,7 +36,7 @@ const router = createRouter({
     },
     {
       path: '/gacha/:id',
-      name: 'gacha/:id',
+      name: 'gachaPage',
       component: GachaPage
     },
     {
@@ -67,6 +68,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  if (to.name === 'shop' && localStorage.access_token) useGlobalStore().historyPath = from.name;
   if (to.name === 'login' && localStorage.access_token) next({ name: 'home' })
   else if (to.name === 'register' && localStorage.access_token) next({ name: 'home' })
   else if (to.name === 'inventory' && !localStorage.access_token) next({ name: 'login' })
