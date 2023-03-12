@@ -13,7 +13,7 @@
 
 <style scoped>
   .banner-card {
-    width: 15em;
+    width: 20em;
     overflow: hidden;
     position: relative;
     transition: transform 0.3s ease;

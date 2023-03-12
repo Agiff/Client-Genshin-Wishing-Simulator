@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { failureAlert, successAlert } from '../helpers/sweetalert';
+import Swal from 'sweetalert2';
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({ 
@@ -21,7 +22,8 @@ export const useGlobalStore = defineStore('global', {
     obtained: {
       rarity: 3,
       imageUrl: 'https://static.wikia.nocookie.net/gensin-impact/images/2/2f/Weapon_Dull_Blade.png'
-    }
+    },
+    historyPath: ''
   }),
   getters: {
     doubleCount: (state) => state.count * 2,
@@ -147,6 +149,7 @@ export const useGlobalStore = defineStore('global', {
           })
           this.gachaResult = data;
           this.fetchPities();
+          this.fetchInventories();
           if (this.gachaResult.result.title === 'Blue Star') {
             this.isGacha = this.gachaResult.result.title;
             this.obtained.rarity = 3;
@@ -259,8 +262,28 @@ export const useGlobalStore = defineStore('global', {
         
         this.fetchInventories();
         successAlert('Purchase success');
+        if (this.historyPath === 'gachaPage') {
+          this.router.back();
+        }
       } catch (error) {
-        failureAlert(error.response.data.message);
+        if (error.response.data.message === "You don't have enough currency") {
+          Swal.fire({
+            title: "You don't have enough primogem",
+            text: "Do you want to top up first?",
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.router.push('/topup');
+            }
+          })
+        } else {
+          failureAlert(error.response.data.message);
+        }
       }
     },
     async handleTopup(userInput) {
