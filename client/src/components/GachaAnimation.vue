@@ -18,21 +18,21 @@
       },
       getGif() {
         if (this.type === 'single') {
-          if (this.isGacha === 'Blue Star') return 'https://cdn.discordapp.com/attachments/1082853942670655610/1082899285324083241/SingleBlueNoLoopWhite.gif?' + Math.random();
-          if (this.isGacha === 'Purple Star') return 'https://cdn.discordapp.com/attachments/1082853942670655610/1082899314789072926/SinglePurpleNoLoopWhite.gif?' + Math.random();
-          if (this.isGacha === 'Gold Star') return 'https://cdn.discordapp.com/attachments/1082853942670655610/1082899325471965184/SingleGoldNoLoopWhite.gif?' + Math.random();
+          if (this.isGacha === 'Blue Star') return 'https://cdn.discordapp.com/attachments/1082853942670655610/1084492035001680024/Single_Blue.mp4';
+          if (this.isGacha === 'Purple Star') return 'https://cdn.discordapp.com/attachments/1082853942670655610/1084492037736370228/Single_Purple.mp4';
+          if (this.isGacha === 'Gold Star') return 'https://cdn.discordapp.com/attachments/1082853942670655610/1084492037082054656/Single_Gold.mp4';
         }
         if (this.type === 'bulk') {
-          if (this.isGacha10x === 'Purple Star') return 'https://cdn.discordapp.com/attachments/1082853942670655610/1082904215476772944/PurpleBulkNoLoopWhite.gif?' + Math.random();
-          if (this.isGacha10x === 'Gold Star') return 'https://cdn.discordapp.com/attachments/1082853942670655610/1082904972829663242/GoldBulkNoLoopWhite.gif?' + Math.random();
+          if (this.isGacha10x === 'Purple Star') return 'https://cdn.discordapp.com/attachments/1082853942670655610/1084492036239011890/Bulk_Purple.mp4';
+          if (this.isGacha10x === 'Gold Star') return 'https://cdn.discordapp.com/attachments/1082853942670655610/1084492035651801108/Bulk_Gold.mp4';
         }
       }
     },
     methods: {
       stopGif() {
-        this.timeout = 0;
-        clearTimeout(this.timeoutId);
-        this.$refs.gifImage.src = "";
+        this.$refs.gachaVideo.pause();
+        this.$refs.gachaVideo.currentTime = 0;
+        this.onAnimation = false;
       },
       backToGachaPage() {
         this.isGacha = '';
@@ -41,38 +41,34 @@
       getObtainedName10x(name) {
         const newName = name.split('-').join(' ');
         return newName.charAt(0).toUpperCase() + newName.slice(1);
+      },
+      onStop() {
+        this.onAnimation = false;
       }
     },
     data() {
       return {
-        timeout: 6670,
-        timeoutId: null,
-        isLoading: true
+        isLoading: true,
+        onAnimation: false
       }
     },
     mounted() {
       setTimeout(() => {
         this.isLoading = false;
-        this.timeoutId = setTimeout(() => {
-          this.timeout = 0;
-          this.$refs.gifImage.src = "";
-        }, this.timeout);
+        this.onAnimation = true;
       }, 500);
     },
-    beforeUnmount() {
-      clearTimeout(this.timeoutId);
-      this.$refs.gifImage.src = "";
-    }
   }
 </script>
 
 <template>
   <LoadingSpinner v-if="isLoading"/>
-  <div @click="stopGif" style="position: relative;" v-show="timeout > 0 && !isLoading">
-    <!-- <div @click="stopGif" class="btn btn-warning" style="position: absolute; bottom: 10px; right: 10px;">Skip</div> -->
-    <img ref="gifImage" class="vh-100 vw-100" :src="getGif">
+  <div @click="stopGif" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;" v-show="onAnimation && !isLoading">
+    <video @ended="onStop" ref="gachaVideo" autoplay muted style="width: 100%; height: 100%; object-fit: cover;">
+      <source :src="getGif" type="video/mp4">
+    </video>
   </div>
-  <div @click="backToGachaPage" class="container vh-100 d-flex flex-column justify-content-center align-items-center" v-if="timeout === 0 && !isLoading">
+  <div @click="backToGachaPage" class="container vh-100 d-flex flex-column justify-content-center align-items-center" v-if="!onAnimation && !isLoading">
     <div v-if="type === 'single'" class=" bg-light bg-opacity-75 text-center p-5">
       <img :src="obtained.imageUrl" style="width: 200px;" class="m-5">
       <h1>{{ getObtainedName }}</h1>

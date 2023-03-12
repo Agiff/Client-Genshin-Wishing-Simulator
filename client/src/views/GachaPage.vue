@@ -11,7 +11,8 @@
       GachaAnimation
     },
     computed: {
-      ...mapState(useGlobalStore, ['currentBanner', 'isLoading', 'pities', 'inventory', 'isGacha', 'gachaResult', 'isGacha10x', 'gachaResult10x']),
+      ...mapState(useGlobalStore, ['currentBanner', 'isLoading', 'pities', 'inventory', 'gachaResult', 'gachaResult10x']),
+      ...mapWritableState(useGlobalStore, ['isGacha', 'isGacha10x']),
       getGuaraGoldStatus() {
         if (this.pities.guaranteedGoldCharacter) return 'On';
         else return 'Off';
@@ -50,6 +51,8 @@
       this.fetchInventories();
       this.fetchFourStarCharacters();
       this.fetchFiveStarCharacters();
+      this.isGacha = '';
+      this.isGacha10x = '';
     }
   }
 </script>
