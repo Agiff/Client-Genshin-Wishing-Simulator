@@ -45,7 +45,7 @@
 
 <template>
   <GachaAnimation type="single" v-if="isGacha !== ''"/>
-  <div v-if="isGacha === ''" class="container vh-100 d-flex flex-column justify-content-center align-items-center">
+  <div v-if="isGacha === '' && !isLoading" class="container vh-100 d-flex flex-column justify-content-center align-items-center">
     <div class="d-flex align-self-end mb-2">
       <div class="me-3 d-flex justify-content-center align-items-center">
         <img src="https://static.wikia.nocookie.net/gensin-impact/images/d/d4/Item_Primogem.png" style="width: 30px;">
@@ -87,14 +87,3 @@
     </div>
   </div>
 </template>
-
-<style scoped>
-  .custom-card {
-    width: 15vw;
-    height: 70vh;
-    border-radius: 10px;
-    position: absolute;
-    top: 8.5%;
-    left: 1%;
-  }
-</style>

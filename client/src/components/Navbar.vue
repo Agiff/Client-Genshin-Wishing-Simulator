@@ -19,7 +19,7 @@ import { useGlobalStore } from '../stores/global';
 </script>
 
 <template>
-  <nav class="fixed-top" style="z-index: 0;">
+  <nav class="fixed-top">
     <div class="container-fluid d-flex justify-content-end p-3">
       <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
         <img src="https://muakasan.github.io/genshin-portraits/assets/UI_AvatarIcon_Noel.png" alt="Noel" class="rounded-circle" style="width: 50px; height: 50px;">
