@@ -232,6 +232,7 @@ export const useGlobalStore = defineStore('global', {
     },
     async fetchCharacterDetail(name) {
       try {
+        this.character = {};
         this.isLoading = true;
         const { data } = await axios({
           method: 'GET',

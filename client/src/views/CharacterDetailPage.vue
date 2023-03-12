@@ -9,15 +9,23 @@
       LoadingSpinner
     },
     computed: {
-      ...mapState(useGlobalStore, ['character', 'fourStarCharacters', 'fiveStarCharacters', 'isLoading']),
+      ...mapState(useGlobalStore, ['character', 'fourStarCharacters', 'fiveStarCharacters', 'inventory', 'isLoggedIn']),
       getImageUrl() {
-        const allCharacters = [...this.fourStarCharacters, ...this.fiveStarCharacters];
-        const currentCharacter = allCharacters.find(el => el.name === this.$route.params.name);
-        return currentCharacter.imageUrl;
+        if (this.fourStarCharacters.length > 0 && this.fiveStarCharacters.length > 0) {
+          const allCharacters = [...this.fourStarCharacters, ...this.fiveStarCharacters];
+          const currentCharacter = allCharacters.find(el => el.name === this.$route.params.name);
+          return currentCharacter.imageUrl;
+        }
+      },
+      getCons() {
+        if (this.inventory.Characters) {
+          const char = this.inventory.Characters.find(el => el.name === this.$route.params.name);
+          if (char) return `( C${char.constellation} )`;
+        }
       }
     },
     methods: {
-      ...mapActions(useGlobalStore, ['fetchCharacterDetail', 'fetchFourStarCharacters', 'fetchFiveStarCharacters']),
+      ...mapActions(useGlobalStore, ['fetchCharacterDetail', 'fetchFourStarCharacters', 'fetchFiveStarCharacters', 'fetchInventories']),
       getTalentType(type) {
         if (type === 'Right Click') type = 'Alternate Sprint';
         return type;
@@ -27,15 +35,16 @@
       this.fetchCharacterDetail(this.$route.params.name);
       this.fetchFourStarCharacters();
       this.fetchFiveStarCharacters();
+      if (this.isLoggedIn) this.fetchInventories();
     }
   }
 </script>
 
 <template>
-  <LoadingSpinner v-if="isLoading" />
-  <div v-if="!isLoading" class="container pt-3">
+  <LoadingSpinner v-if="!character.name" />
+  <div v-if="character.name" class="container pt-3">
     <div class="row d-flex justify-content-center align-items-center bg-light bg-opacity-75">
-      <h1 class="fw-bold">{{ character.name }}</h1>
+      <h1 class="fw-bold">{{ character.name }} <span v-if="isLoggedIn">{{ getCons }}</span></h1>
       <hr>
       <div class="row">
         <div class="col-6">
