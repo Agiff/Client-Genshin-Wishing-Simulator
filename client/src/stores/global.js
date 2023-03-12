@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { failureAlert, successAlert } from '../helpers/sweetalert';
+import Swal from 'sweetalert2';
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({ 
@@ -13,11 +14,21 @@ export const useGlobalStore = defineStore('global', {
     isLoggedIn: false,
     isLoading: false,
     isGacha: '',
+    isGacha10x: '',
     inventory: {},
     character: {},
     pities: {},
     gachaResult: {},
-    gachaResult10x: {}
+    gachaResult10x: {},
+    obtained: {
+      rarity: 3,
+      imageUrl: 'https://static.wikia.nocookie.net/gensin-impact/images/2/2f/Weapon_Dull_Blade.png'
+    },
+    obtained10x: {
+      rarity: [],
+      imageUrl: []
+    },
+    historyPath: ''
   }),
   getters: {
     doubleCount: (state) => state.count * 2,
@@ -129,47 +140,99 @@ export const useGlobalStore = defineStore('global', {
       }
     },
     async startGachaLimitedCharacter(id) {
-      // try {
-      //   const { data } = await axios({
-      //     method: 'GET',
-      //     url: this.baseUrl + '/gachas/limited/' + id,
-      //     headers: {
-      //       access_token: localStorage.access_token
-      //     }
-      //   })
-      //   this.gachaResult = data;
-      //   this.fetchPities();
-      // } catch (error) {
-      //   failureAlert(error.response.data.message);
-      //   this.router.push('/login');
-      // }
-      return axios({
-        method: 'GET',
-        url: this.baseUrl + '/gachas/limited/' + id,
-        headers: {
-          access_token: localStorage.access_token
+      try {
+        if (this.currentBanner.id === 1) return this.throwUser("This banner is currently unavailable", '/');
+        if (this.inventory.intertwined_fate < 1) {
+          this.throwUser("You don't have enough fate", '/shop');
+        } else {
+          this.gachaResult = {};
+          this.gachaResult10x = {};
+          const { data } = await axios({
+            method: 'GET',
+            url: this.baseUrl + '/gachas/limited/' + id,
+            headers: {
+              access_token: localStorage.access_token
+            }
+          })
+          this.gachaResult = data;
+          this.fetchPities();
+          this.fetchInventories();
+          if (this.gachaResult.result.title === 'Blue Star') {
+            this.isGacha = this.gachaResult.result.title;
+            this.obtained.rarity = 3;
+          }
+          if (this.gachaResult.result.title === 'Purple Star') {
+            this.isGacha = this.gachaResult.result.title;
+            this.obtained.rarity = 4;
+          }
+          if (this.gachaResult.result.title === 'Gold Star') {
+            this.isGacha = this.gachaResult.result.title;
+            this.obtained.rarity = 5;
+          }
+          this.obtained.imageUrl = 'https://static.wikia.nocookie.net/gensin-impact/images/2/2f/Weapon_Dull_Blade.png';
+
+          let findChar;
+          findChar = this.fourStarCharacters.find(el => el.name === this.gachaResult.result.obtained);
+          if (findChar) {
+            this.obtained.imageUrl = findChar.imageUrl;
+          }
+          findChar = this.fiveStarCharacters.find(el => el.name === this.gachaResult.result.obtained);
+          if (findChar) {
+            this.obtained.imageUrl = findChar.imageUrl;
+          }
         }
-      })
+      } catch (error) {
+        failureAlert(error.response.data.message);
+        this.router.push('/login');
+      }
     },
     async startGachaLimitedCharacter10x(id) {
       try {
-        const { data } = await axios({
-          method: 'GET',
-          url: this.baseUrl + '/gachas/limited/' + id + '/10x',
-          headers: {
-            access_token: localStorage.access_token
+        if (this.currentBanner.id === 1) return this.throwUser("This banner is currently unavailable", '/');
+        if (this.inventory.intertwined_fate < 10) {
+          this.throwUser("You don't have enough fate", '/shop');
+        } else {
+          this.gachaResult = {};
+          this.gachaResult10x = {};
+          const { data } = await axios({
+            method: 'GET',
+            url: this.baseUrl + '/gachas/limited/' + id + '/10x',
+            headers: {
+              access_token: localStorage.access_token
+            }
+          })
+          this.gachaResult10x = data;
+          this.fetchPities();
+          this.fetchInventories();
+          const findPurple = this.gachaResult10x.title.find(el => el === 'Purple Star');
+          const findGold = this.gachaResult10x.title.find(el => el === 'Gold Star');
+          if (findPurple) this.isGacha10x = 'Purple Star';
+          if (findGold) this.isGacha10x = 'Gold Star';
+          this.obtained10x.rarity = [];
+          this.obtained10x.imageUrl = [];
+          for (let i = 0; i < 10; i++) {
+            if (this.gachaResult10x.title[i] === 'Blue Star') this.obtained10x.rarity.push(3);
+            if (this.gachaResult10x.title[i] === 'Purple Star') this.obtained10x.rarity.push(4);
+            if (this.gachaResult10x.title[i] === 'Gold Star') this.obtained10x.rarity.push(5);
+
+            this.obtained10x.imageUrl.push('https://static.wikia.nocookie.net/gensin-impact/images/2/2f/Weapon_Dull_Blade.png');
+  
+            let findChar;
+            findChar = this.fourStarCharacters.find(el => el.name === this.gachaResult10x.obtained[i]);
+            if (findChar) this.obtained10x.imageUrl[i] = findChar.imageUrl;
+            findChar = this.fiveStarCharacters.find(el => el.name === this.gachaResult10x.obtained[i]);
+            if (findChar) this.obtained10x.imageUrl[i] = findChar.imageUrl;
           }
-        })
-        console.log(data);
-        this.gachaResult10x = data;
-        this.fetchPities();
+        }
       } catch (error) {
+        console.log(error);
         failureAlert(error.response.data.message);
         this.router.push('/login');
       }
     },
     async fetchCharacterDetail(name) {
       try {
+        this.character = {};
         this.isLoading = true;
         const { data } = await axios({
           method: 'GET',
@@ -234,8 +297,28 @@ export const useGlobalStore = defineStore('global', {
         
         this.fetchInventories();
         successAlert('Purchase success');
+        if (this.historyPath === 'gachaPage') {
+          this.router.back();
+        }
       } catch (error) {
-        failureAlert(error.response.data.message);
+        if (error.response.data.message === "You don't have enough currency") {
+          Swal.fire({
+            title: "You don't have enough primogem",
+            text: "Do you want to top up first?",
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.router.push('/topup');
+            }
+          })
+        } else {
+          failureAlert(error.response.data.message);
+        }
       }
     },
     async handleTopup(userInput) {

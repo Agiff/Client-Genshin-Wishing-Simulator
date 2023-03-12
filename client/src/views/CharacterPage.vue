@@ -38,7 +38,7 @@
   <LoadingSpinner v-if="isLoading" />
   <div v-if="!isLoading" class="container pt-3 d-flex justify-content-center">
     <div class="row bg-light bg-opacity-75 pb-4 px-4" style="width: 67vw;">
-      <CharacterPotrait v-for="(character, index) in allCharacters" :key="character.id"
+      <CharacterPotrait v-for="(character, index) in allCharacters" :key="index"
       :character="character" @click="this.$router.push(`/characters/${character.name}`)"/>
     </div>
   </div>
