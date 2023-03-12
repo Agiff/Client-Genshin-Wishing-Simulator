@@ -11,8 +11,7 @@
       GachaAnimation
     },
     computed: {
-      ...mapState(useGlobalStore, ['currentBanner', 'isLoading', 'pities', 'inventory']),
-      ...mapWritableState(useGlobalStore, ['isGacha', 'gachaResult', 'gachaResult10x']),
+      ...mapState(useGlobalStore, ['currentBanner', 'isLoading', 'pities', 'inventory', 'isGacha', 'gachaResult', 'isGacha10x', 'gachaResult10x']),
       getGuaraGoldStatus() {
         if (this.pities.guaranteedGoldCharacter) return 'On';
         else return 'Off';
@@ -26,8 +25,20 @@
         else return '600';
       },
       getObtainedName() {
-        const newName = this.gachaResult.result.obtained.split('-').join(' ');
-        return newName.charAt(0).toUpperCase() + newName.slice(1);
+        if (this.gachaResult.result) {
+          const newName = this.gachaResult.result.obtained.split('-').join(' ');
+          return newName.charAt(0).toUpperCase() + newName.slice(1);
+        }
+        if (this.gachaResult10x.obtained) {
+          const newName = this.gachaResult10x.obtained[9].split('-').join(' ');
+          return newName.charAt(0).toUpperCase() + newName.slice(1);
+        }
+        return '-';
+      },
+      getRNG() {
+        if (this.gachaResult.RNG) return this.gachaResult.RNG;
+        if (this.gachaResult10x.RNG) return this.gachaResult10x.RNG[9];
+        return '-';
       }
     },
     methods: {
@@ -45,7 +56,8 @@
 
 <template>
   <GachaAnimation type="single" v-if="isGacha !== ''"/>
-  <div v-if="isGacha === '' && !isLoading" class="container vh-100 d-flex flex-column justify-content-center align-items-center">
+  <GachaAnimation type="bulk" v-if="isGacha10x !== ''"/>
+  <div v-if="isGacha === '' && isGacha10x === '' && !isLoading" class="container vh-100 d-flex flex-column justify-content-center align-items-center">
     <div class="d-flex align-self-end mb-2">
       <div class="me-3 d-flex justify-content-center align-items-center">
         <img src="https://static.wikia.nocookie.net/gensin-impact/images/d/d4/Item_Primogem.png" style="width: 30px;">
@@ -72,16 +84,16 @@
         <p>Purple Star Pity: {{ pities.charLimitedPurplePity }}</p>
         <p>Gold Star Rate: {{ getGoldStarRate }}</p>
         <p>Purple Star Rate: 5100</p>
-        <p>RNG: {{ gachaResult.RNG ? gachaResult.RNG : '-' }}</p>
+        <p>RNG: {{ getRNG }}</p>
         <hr>
         <p style="margin-bottom: 5px;">Obtained:</p>
-        <p class="fw-semibold">{{ gachaResult.result ? getObtainedName : '-' }}</p>
+        <p class="fw-semibold">{{ getObtainedName }}</p>
       </div>
       <div class="d-flex flex-column">
         <img :src="currentBanner.bannerImageUrl" style="width: 65vw; height: 70vh;">
         <div class="align-self-end mt-3">
-          <div @click="startGachaLimitedCharacter(this.$route.params.id)" class="btn btn-primary" style="width: 20vh;">Wish</div>
-          <!-- <div @click="startGacha10x(this.$route.params.id)" class="btn btn-primary m-3 shadow p-2" style="width: 15vh;">Wish x10</div> -->
+          <div @click="startGachaLimitedCharacter(this.$route.params.id)" class="btn btn-primary" style="width: 20vh;">Wish x1</div>
+          <div @click="startGachaLimitedCharacter10x(this.$route.params.id)" class="btn btn-primary m-3 shadow p-2" style="width: 20vh;">Wish x10</div>
         </div>
       </div>
     </div>
