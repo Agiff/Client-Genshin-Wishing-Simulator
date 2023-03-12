@@ -18,6 +18,7 @@
       findCharacter(character) {
         const allCharacters = [...this.fourStarCharacters, ...this.fiveStarCharacters];
         const currentCharacter = allCharacters.find(el => el.name === character.name);
+        currentCharacter.constellation = character.constellation;
         return currentCharacter;
       }
     },

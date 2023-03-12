@@ -68,6 +68,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  useGlobalStore().historyPath = '';
   if (to.name === 'shop' && localStorage.access_token) useGlobalStore().historyPath = from.name;
   if (to.name === 'login' && localStorage.access_token) next({ name: 'home' })
   else if (to.name === 'register' && localStorage.access_token) next({ name: 'home' })
