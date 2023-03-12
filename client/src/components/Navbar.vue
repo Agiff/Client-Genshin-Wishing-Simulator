@@ -65,6 +65,16 @@ import { useGlobalStore } from '../stores/global';
             </li>
           </ul>
         </div>
+        <div class="d-flex w-100 justify-content-evenly mb-3" style="position: absolute; bottom: 0; margin-left: -6%;">
+          <a href="https://github.com/Agiff">
+            <img class="rounded-circle me-2" src="https://cdn.discordapp.com/attachments/559843911145619462/1084524703613460592/Logo.png" width="30" alt="Hoyoverse">
+            <label class="text-white">Seirei</label>
+          </a>
+          <a href="https://genshin.hoyoverse.com/en/">
+            <img class="rounded-circle me-2" src="https://static.wikia.nocookie.net/gensin-impact/images/8/80/Genshin_Impact.png" width="30" alt="Hoyoverse">
+            <label class="text-white">Hoyoverse</label>
+          </a>
+        </div>
       </div>
     </div>
   </nav>
